@@ -91,6 +91,57 @@ def extract_text_from_is_html(html: Union[str, TextIO]) -> str:
     if txt == "":
         raise ValueError("Parsing results in an empty article")
     return txt
+    
+def extract_text_from_al_html(html: Union[str, TextIO]) -> str:
+    """Extract article text from Aamulehti article HTML
+
+    Args:
+        html (Union[str,TextIO]): a string or a file-like object containing the article HTML
+
+    Raises:
+        ValueError: The layout of the article was not recognized, or the article parsed as empty
+
+    Returns:
+        str: article text
+    """
+    soup = BeautifulSoup(html, 'lxml')
+    elem = soup.select_one(
+        'article.single-article,article.article--m,article.article--l,article.article--xl-picture-top,article.article--xl-title-top')
+    if elem is None:
+        raise ValueError("Article layout not recognized")
+    for tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'p', 'div']:
+        for block_elem in elem.find_all(tag):
+            block_elem.insert_after(NavigableString('\n\n'))
+    txt = elem.get_text().strip()
+    if txt == "":
+        raise ValueError("Parsing results in an empty article")
+    return txt
+
+
+def extract_text_from_sk_html(html: Union[str, TextIO]) -> str:
+    """Extract article text from Satakunnan kansa article HTML
+
+    Args:
+        html (Union[str,TextIO]): a string or a file-like object containing the article HTML
+
+    Raises:
+        ValueError: The layout of the article was not recognized, or the article parsed as empty
+
+    Returns:
+        str: article text
+    """
+    soup = BeautifulSoup(html, 'lxml')
+    elem = soup.select_one(
+        'article.single-article,article.article--m,article.article--l,article.article--xl-picture-top,article.article--xl-title-top')
+    if elem is None:
+        raise ValueError("Article layout not recognized")
+    for tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'p', 'div']:
+        for block_elem in elem.find_all(tag):
+            block_elem.insert_after(NavigableString('\n\n'))
+    txt = elem.get_text().strip()
+    if txt == "":
+        raise ValueError("Parsing results in an empty article")
+    return txt
 
 
 def extract_text_from_il_html(html: Union[str, TextIO]) -> str:
